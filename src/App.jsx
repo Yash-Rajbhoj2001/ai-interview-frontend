@@ -14,6 +14,7 @@ import Dashboard from "./pages/app/Dashboard";
 import JobDescriptions from "./pages/app/JobDescriptions";
 import Interviews from "./pages/app/Interviews";
 import Reports from "./pages/app/Reports";
+import ReportDetail from "./pages/app/ReportDetail";
 import Subscription from "./pages/app/Subscription";
 
 function ScrollToTop() {
@@ -51,6 +52,7 @@ function App() {
             <Route path="/job-descriptions" element={<JobDescriptions />} />
             <Route path="/interviews" element={<Interviews />} />
             <Route path="/reports" element={<Reports />} />
+            <Route path="/reports/:sessionId" element={<ReportDetail />} />
             <Route path="/subscription" element={<Subscription />} />
           </Route>
 
