@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ================= GLOBAL BASE ================= */
+
+body {
+  @apply bg-background text-gray-900;
+}
+
+/* ================= CARD HOVER (Reusable) ================= */
+
+.card-hover {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+}
+
+/* ================= GRADIENT TEXT ANIMATION ================= */
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.animate-gradient {
+  background-size: 200% 200%;
+  animation: gradientMove 8s ease infinite; /* Slower = Premium */
+}
+
+/* ================= FLOATING BACKGROUND GLOW ================= */
+
+@keyframes float {
+  0% { transform: translate(-50%, 0px); }
+  50% { transform: translate(-50%, 20px); }
+  100% { transform: translate(-50%, 0px); }
+}
+
+/* ================= 3D PREVIEW EFFECT ================= */
+
+.perspective-container {
+  perspective: 1200px;
+}
+
+.preview-card {
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transform-style: preserve-3d;
+}
+
+.preview-card:hover {
+  transform: rotateX(3deg) rotateY(-3deg);
+  box-shadow: 0 30px 80px rgba(79, 70, 229, 0.15);
+}
