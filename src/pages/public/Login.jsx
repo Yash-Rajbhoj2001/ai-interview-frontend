@@ -96,7 +96,15 @@ function Login() {
       >
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="text-lg font-semibold tracking-tight">
-            AI.<span className="text-primary"> Interview</span>
+            <div
+              onClick={() => {
+                navigate("/");
+                window.scrollTo(0, 0);
+              }}
+              className="text-lg font-semibold tracking-tight cursor-pointer"
+            >
+              AI.<span className="text-primary"> Interview</span>
+            </div>
           </div>
         </div>
       </header>

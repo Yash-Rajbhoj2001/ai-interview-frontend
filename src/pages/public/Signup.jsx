@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function Signup() {
 
@@ -12,6 +12,7 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   // ✅ NEW STATES (added)
   const [fieldErrors, setFieldErrors] = useState({});
@@ -104,7 +105,15 @@ function Signup() {
       >
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="text-lg font-semibold tracking-tight">
-            AI.<span className="text-primary"> Interview</span>
+            <div
+              onClick={() => {
+                navigate("/");
+                window.scrollTo(0, 0);
+              }}
+              className="text-lg font-semibold tracking-tight cursor-pointer"
+            >
+              AI.<span className="text-primary"> Interview</span>
+            </div>
           </div>
         </div>
       </header>

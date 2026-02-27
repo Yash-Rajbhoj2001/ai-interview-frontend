@@ -2,9 +2,14 @@ import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
 import { motion } from "framer-motion";
+import { useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 
 function MainLayout() {
+  const location = useLocation();
+
   return (
+    
     <div className="h-screen flex overflow-hidden bg-gradient-to-br from-white via-indigo-50/30 to-white relative">
 
       {/* Floating Gradient Blob */}
@@ -24,15 +29,19 @@ function MainLayout() {
         </div>
 
         {/* ================= SCROLLABLE CONTENT ================= */}
-        <main className="flex-1 overflow-y-auto mt-20 p-10 h-screen">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25 }}
-          >
-            <Outlet />
-          </motion.div>
-        </main>
+          <main className="absolute top-20 left-64 right-0 bottom-0 overflow-y-auto p-10">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={location.pathname}
+                initial={{ opacity: 0, scale: 0.98 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.98 }}
+                transition={{ duration: 0.40, ease: "easeOut" }}
+              >
+                <Outlet />
+              </motion.div>
+            </AnimatePresence>
+          </main>
 
       </div>
     </div>
