@@ -85,7 +85,7 @@ function Reports() {
                 <td className="pr-6 text-right">
                   <Link
                     to={`/reports/${report.id}`}
-                    className="px-4 py-2 rounded-xl bg-gray-900 text-white hover:bg-black transition"
+                    className="px-6 py-3 rounded-2xl bg-gray-900 text-white font-medium hover:bg-black hover:scale-[1.03] transition-all duration-300"
                   >
                     View Full Report
                   </Link>
@@ -100,7 +100,7 @@ function Reports() {
       <div className="flex justify-center">
         <Link
           to="/interviews"
-          className="px-8 py-3 rounded-2xl bg-gray-900 text-white hover:bg-black transition"
+          className="px-6 py-3 rounded-2xl bg-gray-900 text-white font-medium hover:bg-black hover:scale-[1.03] transition-all duration-300"
         >
           Start New Interview Session
         </Link>
