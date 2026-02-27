@@ -4,7 +4,6 @@ import Navbar from "../components/Navbar";
 function PublicLayout() {
   return (
     <div className="min-h-screen bg-white relative">
-
       {/* <Navbar /> */}
 
       <main>
