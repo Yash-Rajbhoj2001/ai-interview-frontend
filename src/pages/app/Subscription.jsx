@@ -1,19 +1,19 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-
+ 
 function Subscription() {
   const navigate = useNavigate();
   const [selectedInvoice, setSelectedInvoice] = useState(null);
-
+ 
   /* ================= STATE ================= */
-
+ 
   const [billingCycle, setBillingCycle] = useState("monthly");
-
+ 
   const activePlan = "Free";
-
+ 
   /* ================= PLAN DATA ================= */
-
+ 
   const monthlyPlans = [
     {
       name: "Free",
@@ -61,7 +61,7 @@ function Subscription() {
       buttonText: "Go Premium"
     }
   ];
-
+ 
   const yearlyPlans = [
     {
       name: "Pro",
@@ -87,13 +87,13 @@ function Subscription() {
       buttonText: "Go Premium"
     }
   ];
-
+ 
   const plans =
     billingCycle === "monthly" ? monthlyPlans : yearlyPlans;
-
+ 
   return (
     <div className="max-w-7xl mx-auto space-y-10">
-
+ 
       {/* ================= HEADER ================= */}
       <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-10 shadow-sm border border-gray-200/50">
         <h2 className="text-3xl font-semibold text-gray-900">
@@ -103,7 +103,7 @@ function Subscription() {
           Choose the plan that fits your goals.
         </p>
       </div>
-
+ 
       {/* ================= BILLING TOGGLE ================= */}
       <div className="flex justify-center">
         <div className="relative bg-gray-200 rounded-full p-1 w-64 flex">
@@ -117,7 +117,7 @@ function Subscription() {
           >
             Monthly
           </button>
-
+ 
           <button
             onClick={() => setBillingCycle("yearly")}
             className={`flex-1 py-2 rounded-full text-sm font-medium transition ${
@@ -130,9 +130,9 @@ function Subscription() {
           </button>
         </div>
       </div>
-
+ 
       {/* ================= PLANS GRID ================= */}
-
+ 
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -145,7 +145,7 @@ function Subscription() {
       >
         {plans.map((plan, index) => {
           const isActive = activePlan === plan.name;
-
+ 
           return (
             <div
               key={index}
@@ -161,7 +161,7 @@ function Subscription() {
                   Active Plan
                 </div>
               )}
-
+ 
               <h3
                 className={`text-xl font-semibold ${
                   plan.highlighted
@@ -171,7 +171,7 @@ function Subscription() {
               >
                 {plan.name}
               </h3>
-
+ 
               <p
                 className={`text-4xl font-bold mt-6 ${
                   plan.highlighted
@@ -181,7 +181,7 @@ function Subscription() {
               >
                 {plan.price}
               </p>
-
+ 
               <p
                 className={`mt-3 text-sm ${
                   plan.highlighted
@@ -191,7 +191,7 @@ function Subscription() {
               >
                 {plan.description}
               </p>
-
+ 
               <ul
                 className={`mt-8 space-y-3 text-sm ${
                   plan.highlighted
@@ -203,7 +203,7 @@ function Subscription() {
                   <li key={i}>• {feature}</li>
                 ))}
               </ul>
-
+ 
               {!isActive && plan.name !== "Free" && (
                 <button
                   onClick={() =>
@@ -224,14 +224,14 @@ function Subscription() {
           );
         })}
       </motion.div>
-
+ 
              {/* ================= BILLING HISTORY ================= */}
-
+ 
       <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-sm border border-gray-200/50 mt-10">
         <h3 className="text-xl font-semibold text-gray-900 mb-6">
           Billing History
         </h3>
-
+ 
         {/* Demo Data */}
         {[
           {
@@ -271,12 +271,12 @@ function Subscription() {
                 {bill.date}
               </p>
             </div>
-
+ 
             <div className="text-right">
               <p className="text-sm font-medium text-gray-900">
                 {bill.amount}
               </p>
-
+ 
               <span
                 className={`text-xs px-3 py-1 rounded-full ${
                   bill.status === "Paid"
@@ -286,7 +286,7 @@ function Subscription() {
               >
                 {bill.status}
               </span>
-
+ 
               <div>
                 <button
                   onClick={() => setSelectedInvoice(bill)}
@@ -302,61 +302,62 @@ function Subscription() {
                 {/* ================= INVOICE MODEL ================= */}
         {selectedInvoice && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-
+ 
             <div className="bg-white rounded-3xl w-full max-w-lg p-8 shadow-2xl relative">
-
+ 
               <button
                 onClick={() => setSelectedInvoice(null)}
                 className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
               >
                 ✕
               </button>
-
+ 
               <h3 className="text-xl font-semibold text-gray-900 mb-6">
                 Invoice Details
               </h3>
-
+ 
               <div className="space-y-3 text-sm text-gray-700">
                 <div className="flex justify-between">
                   <span>Plan</span>
                   <span className="font-medium">{selectedInvoice.plan}</span>
                 </div>
-
+ 
                 <div className="flex justify-between">
                   <span>Date</span>
                   <span>{selectedInvoice.date}</span>
                 </div>
-
+ 
                 <div className="flex justify-between">
                   <span>Amount</span>
                   <span className="font-medium">{selectedInvoice.amount}</span>
                 </div>
-
+ 
                 <div className="flex justify-between">
                   <span>Status</span>
                   <span className="text-green-600 font-medium">
                     {selectedInvoice.status}
                   </span>
                 </div>
-
+ 
                 <div className="flex justify-between">
                   <span>Transaction ID</span>
                   <span>TXN{selectedInvoice.id}2025</span>
                 </div>
               </div>
-
+ 
               <button
                 className="mt-8 w-full py-3 rounded-2xl bg-gray-900 text-white hover:bg-black transition"
               >
                 Download PDF
               </button>
-
+ 
             </div>
           </div>
         )}
-
+ 
     </div>
   );
 }
-
+ 
 export default Subscription;
+ 
