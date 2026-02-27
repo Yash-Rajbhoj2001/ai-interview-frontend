@@ -1,7 +1,8 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 
 function ReportDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   // -----------------------------
   // Mock Data (Replace with API)
@@ -58,6 +59,12 @@ function ReportDetail() {
 
       {/* ================= OVERVIEW ================= */}
       <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-10 border border-gray-200/50">
+      <button
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 mb-4 transition"
+      >
+        ← Back
+      </button>
         <h2 className="text-3xl font-semibold text-gray-900">
           {report.role} Interview Report
         </h2>
@@ -157,7 +164,7 @@ function ReportDetail() {
 
       {/* ================= DOWNLOAD ================= */}
       <div className="flex justify-center">
-        <button className="px-8 py-3 rounded-2xl bg-gray-900 text-white hover:bg-black transition">
+        <button className="px-6 py-3 rounded-2xl bg-gray-900 text-white font-medium hover:bg-black hover:scale-[1.03] transition-all duration-300">
           Download Full Report
         </button>
       </div>

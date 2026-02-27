@@ -436,7 +436,7 @@ function Subscription() {
               </div>
  
               <button
-                className="mt-8 w-full py-3 rounded-2xl bg-gray-900 text-white hover:bg-black transition"
+                className="mt-8 w-full px-6 py-3 rounded-2xl bg-gray-900 text-white font-medium hover:bg-black hover:scale-[1.03] transition-all duration-300"
               >
                 Download PDF
               </button>
