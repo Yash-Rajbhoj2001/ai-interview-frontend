@@ -5,11 +5,13 @@ import { useState } from "react";
 function Subscription() {
   const navigate = useNavigate();
   const [selectedInvoice, setSelectedInvoice] = useState(null);
+  
  
   /* ================= STATE ================= */
  
   const [billingCycle, setBillingCycle] = useState("monthly");
- 
+  const [autoRenew, setAutoRenew] = useState(true);
+
   const activePlan = "Free";
  
   /* ================= PLAN DATA ================= */
@@ -103,33 +105,121 @@ function Subscription() {
           Choose the plan that fits your goals.
         </p>
       </div>
+
+      {/* ================= CURRENT PLAN + USAGE ================= */}
+
+          <div className="grid md:grid-cols-2 gap-8">
+
+            {/* CURRENT PLAN CARD */}
+            <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-sm border border-gray-200/50">
+
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">
+                Current Plan
+              </h3>
+
+              <div className="flex items-center gap-3 mb-6">
+                <span className="text-2xl font-bold text-gray-900">
+                  {activePlan}
+                </span>
+
+                <span className="px-3 py-1 text-xs rounded-full bg-green-100 text-green-600">
+                  Active
+                </span>
+              </div>
+
+              {/* AUTO RENEW TOGGLE */}
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">
+                  Auto Renew
+                </span>
+
+                <button
+                  onClick={() => setAutoRenew(!autoRenew)}
+                  className={`w-12 h-6 rounded-full transition-all duration-300 ${
+                    autoRenew ? "bg-indigo-600" : "bg-gray-300"
+                  }`}
+                >
+                  <div
+                    className={`w-5 h-5 bg-white rounded-full shadow transform transition-all duration-300 ${
+                      autoRenew ? "translate-x-6" : "translate-x-1"
+                    }`}
+                  />
+                </button>
+              </div>
+
+            </div>
+
+            {/* USAGE CARD */}
+            <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-8 shadow-sm border border-gray-200/50">
+
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">
+                Usage
+              </h3>
+
+              <p className="text-sm text-gray-600 mb-3">
+                Interviews Used: 1 / 1
+              </p>
+
+              <div className="w-full bg-gray-200 rounded-full h-3">
+                <div
+                  className="bg-indigo-600 h-3 rounded-full"
+                  style={{ width: "100%" }}
+                />
+              </div>
+
+            </div>
+
+          </div>
  
-      {/* ================= BILLING TOGGLE ================= */}
-      <div className="flex justify-center">
-        <div className="relative bg-gray-200 rounded-full p-1 w-64 flex">
-          <button
-            onClick={() => setBillingCycle("monthly")}
-            className={`flex-1 py-2 rounded-full text-sm font-medium transition ${
-              billingCycle === "monthly"
-                ? "bg-white shadow text-gray-900"
-                : "text-gray-600"
-            }`}
-          >
-            Monthly
-          </button>
- 
-          <button
-            onClick={() => setBillingCycle("yearly")}
-            className={`flex-1 py-2 rounded-full text-sm font-medium transition ${
-              billingCycle === "yearly"
-                ? "bg-white shadow text-gray-900"
-                : "text-gray-600"
-            }`}
-          >
-            Yearly
-          </button>
-        </div>
-      </div>
+          {/* ================= BILLING TOGGLE ================= */}
+          <div className="flex justify-center">
+            <div className="relative w-64 bg-gray-200 rounded-full p-1 flex items-center overflow-hidden">
+
+              {/* Animated Background Pill */}
+              <motion.div
+                layout
+                transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                className={`absolute top-1 bottom-1 w-1/2 rounded-full bg-white shadow-md ${
+                  billingCycle === "monthly" ? "left-1" : "left-1/2"
+                }`}
+              />
+
+              {/* Monthly Button */}
+              <motion.button
+                whileTap={{ scale: 0.94 }}
+                animate={{
+                  scale: billingCycle === "monthly" ? 1.05 : 1
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                onClick={() => setBillingCycle("monthly")}
+                className={`relative z-10 flex-1 py-2 text-sm font-medium transition-colors duration-300 ${
+                  billingCycle === "monthly"
+                    ? "text-gray-900"
+                    : "text-gray-500"
+                }`}
+              >
+                Monthly
+              </motion.button>
+
+              {/* Yearly Button */}
+              <motion.button
+                whileTap={{ scale: 0.94 }}
+                animate={{
+                  scale: billingCycle === "yearly" ? 1.05 : 1
+                }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                onClick={() => setBillingCycle("yearly")}
+                className={`relative z-10 flex-1 py-2 text-sm font-medium transition-colors duration-300 ${
+                  billingCycle === "yearly"
+                    ? "text-gray-900"
+                    : "text-gray-500"
+                }`}
+              >
+                Yearly
+              </motion.button>
+
+            </div>
+          </div>
  
       {/* ================= PLANS GRID ================= */}
  
