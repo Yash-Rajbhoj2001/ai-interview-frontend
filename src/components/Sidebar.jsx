@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { LayoutDashboard, FileText, Mic, BarChart3, CreditCard } from "lucide-react";
 
 const navItems = [
@@ -14,7 +14,16 @@ function Sidebar() {
     <div className="w-64 min-h-screen px-6 py-8 backdrop-blur-xl bg-white/70 border-r border-gray-200/50 flex flex-col">
 
       <div className="text-2xl font-semibold tracking-tight text-gray-900 mb-12">
+      <NavLink
+        to="/dashboard"
+        className={({ isActive }) =>
+          `text-lg font-semibold tracking-tight cursor-pointer transition ${
+            isActive ? "text-gray-900" : "text-gray-700 hover:text-gray-900 duration-200"
+          }`
+        }
+      >
         AI.<span className="text-primary"> Interview</span>
+      </NavLink>
       </div>
 
       <nav className="flex flex-col gap-2">

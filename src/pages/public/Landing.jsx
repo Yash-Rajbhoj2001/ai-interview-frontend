@@ -114,7 +114,14 @@ function Landing() {
                 >
                     <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
                     <div className="text-lg font-semibold tracking-tight">
+                        <div
+                        onClick={() =>
+                            window.location.reload()
+                        }
+                        className="text-lg font-semibold tracking-tight cursor-pointer"
+                        >
                         AI.<span className="text-primary"> Interview</span>
+                        </div>
                     </div>
 
                     <div className="flex items-center gap-4">
@@ -307,19 +314,19 @@ function Landing() {
                     visible: { opacity: 1, y: 0 }
                     }}
                     transition={{ duration: 0.8 }}
-                    className="group relative bg-white border border-gray-200 rounded-3xl p-10 shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_40px_80px_rgba(0,0,0,0.12)]"
+                    className="group relative bg-white border border-gray-200 rounded-3xl p-8 shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_40px_80px_rgba(0,0,0,0.12)]"
                 >
                     <h3 className="text-xl font-semibold">Free</h3>
-                    <p className="text-5xl font-bold mt-8">₹0</p>
+                    <p className="text-5xl font-bold mt-6">₹0</p>
 
-                    <ul className="mt-10 space-y-4 text-sm text-gray-500">
+                    <ul className="mt-8 space-y-4 text-sm text-gray-500">
                     <li>1 Interview</li>
                     <li>Basic AI Scoring</li>
                     <li>Transcript Access</li>
                     </ul>
 
                     <Link to="/signup">
-                    <button className="mt-28 w-full py-3 rounded-2xl bg-gray-900 text-white font-medium transition-all duration-300 hover:bg-black hover:scale-[1.02]">
+                    <button className="mt-20 w-full py-3 rounded-2xl bg-gray-900 text-white font-medium transition-all duration-300 hover:bg-black hover:scale-[1.02]">
                     
                     Get Started
                     
@@ -335,12 +342,12 @@ function Landing() {
                     visible: { opacity: 1, y: 0 }
                     }}
                     transition={{ duration: 0.8 }}
-                    className="group relative bg-white border border-gray-200 rounded-3xl p-10 shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_40px_80px_rgba(0,0,0,0.12)]"
+                    className="group relative bg-white border border-gray-200 rounded-3xl p-8 shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-[0_40px_80px_rgba(0,0,0,0.12)]"
                 >
                     <h3 className="text-xl font-semibold">Single</h3>
-                    <p className="text-5xl font-bold mt-8">₹99</p>
+                    <p className="text-5xl font-bold mt-6">₹99</p>
 
-                    <ul className="mt-10 space-y-4 text-sm text-gray-500">
+                    <ul className="mt-8 space-y-4 text-sm text-gray-500">
                     <li>1 Detailed Interview</li>
                     <li>Full Feedback Report</li>
                     <li>Downloadable Transcript</li>
@@ -348,7 +355,7 @@ function Landing() {
 
                     <button 
                     onClick={() => navigate("/payment/single")}
-                    className="mt-28 w-full py-3 rounded-2xl bg-gray-900 text-white font-medium transition-all duration-300 hover:bg-black hover:scale-[1.02]">
+                    className="mt-20 w-full py-3 rounded-2xl bg-gray-900 text-white font-medium transition-all duration-300 hover:bg-black hover:scale-[1.02]">
                     Buy Now
                     </button>
                 </motion.div>
@@ -361,7 +368,7 @@ function Landing() {
                     visible: { opacity: 1, y: 0 }
                     }}
                     transition={{ duration: 0.8 }}
-                    className="relative group rounded-3xl p-10 text-white shadow-2xl scale-105 overflow-hidden transition-all duration-500 hover:-translate-y-4 hover:shadow-[0_60px_100px_rgba(79,70,229,0.35)]
+                    className="relative group rounded-3xl p-8 text-white shadow-2xl scale-105 overflow-hidden transition-all duration-500 hover:-translate-y-4 hover:shadow-[0_60px_100px_rgba(79,70,229,0.35)]
                     bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.25),transparent_40%),linear-gradient(135deg,#6366f1,#4f46e5)]"
                 >
                     <div className="absolute -top-1 left-1/2 -translate-x-1/2 bg-white text-indigo-600 text-xs px-5 py-1 rounded-full font-semibold shadow">
@@ -369,9 +376,9 @@ function Landing() {
                     </div>
 
                     <h3 className="text-xl font-semibold mt-0">Pro</h3>
-                    <p className="text-5xl font-bold mt-8">₹499/mo</p>
+                    <p className="text-5xl font-bold mt-6">₹499/mo</p>
 
-                    <ul className="mt-10 space-y-4 text-sm text-indigo-100">
+                    <ul className="mt-8 space-y-4 text-sm text-indigo-100">
                     <li>10 Interviews / month</li>
                     <li>Advanced AI Feedback</li>
                     <li>Performance Analytics</li>
@@ -380,7 +387,7 @@ function Landing() {
 
                     <button
                      onClick={() => navigate("/payment/pro")} 
-                    className="mt-20 w-full py-3 rounded-2xl bg-white text-indigo-600 font-semibold transition-all duration-300 hover:scale-[1.03]">
+                    className="mt-10 w-full py-3 rounded-2xl bg-white text-indigo-600 font-semibold transition-all duration-300 hover:scale-[1.03]">
                     Upgrade
                     </button>
                 </motion.div>
@@ -393,13 +400,13 @@ function Landing() {
                     visible: { opacity: 1, y: 0 }
                     }}
                     transition={{ duration: 0.8 }}
-                    className="group relative rounded-3xl p-10 text-white shadow-2xl overflow-hidden transition-all duration-500 hover:-translate-y-4 hover:shadow-[0_60px_120px_rgba(0,0,0,0.5)]
+                    className="group relative rounded-3xl p-8 text-white shadow-2xl overflow-hidden transition-all duration-500 hover:-translate-y-4 hover:shadow-[0_60px_120px_rgba(0,0,0,0.5)]
                     bg-gradient-to-br from-gray-900 via-black to-gray-950"
                 >
                     <h3 className="text-xl font-semibold">Premium</h3>
-                    <p className="text-5xl font-bold mt-8">₹999/mo</p>
+                    <p className="text-5xl font-bold mt-6">₹999/mo</p>
 
-                    <ul className="mt-10 space-y-4 text-sm text-gray-300">
+                    <ul className="mt-8 space-y-4 text-sm text-gray-300">
                     <li>Unlimited Interviews</li>
                     <li>Deep AI Evaluation</li>
                     <li>Video + Voice Analysis</li>
@@ -409,7 +416,7 @@ function Landing() {
 
                     <button 
                      onClick={() => navigate("/payment/premium")}
-                    className="mt-12 w-full py-3 rounded-2xl bg-white text-black font-semibold transition-all duration-300 hover:bg-gray-200 hover:scale-[1.03]">
+                    className="mt-8 w-full py-3 rounded-2xl bg-white text-black font-semibold transition-all duration-300 hover:bg-gray-200 hover:scale-[1.03]">
                     Go Premium
                     </button>
                 </motion.div>
