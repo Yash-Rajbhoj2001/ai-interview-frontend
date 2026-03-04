@@ -46,26 +46,63 @@ function Signup() {
     return errors;
   };
 
-  const handleSignup = (e) => {
-    e.preventDefault();
+  const handleSignup = async (e) => {
+  e.preventDefault();
 
-    // ✅ NEW VALIDATION CALL
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setFieldErrors(validationErrors);
-      return;
-    }
+  const validationErrors = validate();
+  if (Object.keys(validationErrors).length > 0) {
+    setFieldErrors(validationErrors);
+    return;
+  }
 
-    if (!passwordRegex.test(password)) {
-      setError(
-        "Password must be 6+ characters, include 1 capital, 1 number & 1 special character."
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/users/register/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: fullName,   // backend requires username
+        email: email,
+        password: password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.email?.[0] ||
+        data.username?.[0] ||
+        data.password?.[0] ||
+        "Signup failed"
       );
-      return;
     }
 
-    setError("");
-    alert("Signup successful (Demo only)");
-  };
+    // After successful register
+
+      const loginResponse = await fetch("http://127.0.0.1:8000/api/users/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+
+      const loginData = await loginResponse.json();
+
+      localStorage.setItem("access_token", loginData.access);
+      localStorage.setItem("refresh_token", loginData.refresh);
+
+      navigate("/dashboard");
+
+  } catch (err) {
+    setError(err.message);
+  }
+};
 
   // Scroll to top
   useEffect(() => {
