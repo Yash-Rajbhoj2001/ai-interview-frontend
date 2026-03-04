@@ -34,8 +34,8 @@ function Login() {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   // Demo credentials
-  const DEMO_EMAIL = "demo@ai.com";
-  const DEMO_PASSWORD = "Demo@123";
+  // const DEMO_EMAIL = "demo@ai.com";
+  // const DEMO_PASSWORD = "Demo@123";
 
   const validate = () => {
     let errors = {};
@@ -56,23 +56,44 @@ function Login() {
     return errors;
   };
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+const handleLogin = async (e) => {
+e.preventDefault();
 
-    const validationErrors = validate();
+  const validationErrors = validate();
 
-    if (Object.keys(validationErrors).length > 0) {
-      setFieldErrors(validationErrors);
-      return;
+  if (Object.keys(validationErrors).length > 0) {
+    setFieldErrors(validationErrors);
+    return;
+  }
+
+  try {
+    const response = await fetch("http://127.0.0.1:8000/api/users/login/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,  
+        password: password,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.detail || "Invalid credentials");
     }
 
-    if (email === DEMO_EMAIL && password === DEMO_PASSWORD) {
-      localStorage.setItem("auth", "true");
-      navigate("/dashboard");
-    } else {
-      setError("Invalid email or password");
-    }
-  };
+    // Save tokens
+    localStorage.setItem("access_token", data.access);
+    localStorage.setItem("refresh_token", data.refresh);
+
+    navigate("/dashboard");
+
+  } catch (err) {
+    setError(err.message);
+  }
+};
 
   const isFormValid =
     email &&

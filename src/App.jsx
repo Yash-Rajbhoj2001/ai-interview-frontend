@@ -5,6 +5,8 @@ import { useLocation } from "react-router-dom";
 import PublicLayout from "./layouts/PublicLayout";
 import MainLayout from "./layouts/MainLayout";
 
+import ProtectedRoute from "./components/ProtectedRoute";
+
 import Landing from "./pages/public/Landing";
 import Login from "./pages/public/Login";
 import Signup from "./pages/public/Signup";
@@ -46,15 +48,21 @@ function App() {
             <Route path="/payment/:plan" element={<PageWrapper><Payment /></PageWrapper>} />
           </Route>
 
-          {/* Authenticated App Routes */}
-          <Route element={<MainLayout />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/job-descriptions" element={<JobDescriptions />} />
-            <Route path="/interviews" element={<Interviews />} />
-            <Route path="/reports" element={<Reports />} />
-            <Route path="/reports/:sessionId" element={<ReportDetail />} />
-            <Route path="/subscription" element={<Subscription />} />
-          </Route>
+         {/* Authenticated App Routes */}
+            <Route
+              element={
+                <ProtectedRoute>
+                  <MainLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/job-descriptions" element={<JobDescriptions />} />
+              <Route path="/interviews" element={<Interviews />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path="/reports/:sessionId" element={<ReportDetail />} />
+              <Route path="/subscription" element={<Subscription />} />
+            </Route>
 
         </Routes>
       </AnimatePresence>
