@@ -60,7 +60,8 @@ function App() {
               <Route path="/job-descriptions" element={<JobDescriptions />} />
               <Route path="/interviews" element={<Interviews />} />
               <Route path="/reports" element={<Reports />} />
-              <Route path="/reports/:sessionId" element={<ReportDetail />} />
+              {/* <Route path="/reports/:sessionId" element={<ReportDetail />} /> */}
+              <Route path="/reports/:id" element={<ReportDetail />} />
               <Route path="/subscription" element={<Subscription />} />
             </Route>
 

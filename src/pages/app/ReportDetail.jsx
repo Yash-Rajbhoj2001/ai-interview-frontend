@@ -1,4 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+
 
 function ReportDetail() {
   const { id } = useParams();
@@ -7,52 +9,195 @@ function ReportDetail() {
   // -----------------------------
   // Mock Data (Replace with API)
   // -----------------------------
-  const report = {
-    role: "Backend Developer",
-    session_id: id,
-    date: "27 Feb 2026",
-    duration: "18 mins",
-    final_score: 82,
-    ai_score: 84,
-    rule_score: 79,
-    technical: 85,
-    communication: 78,
-    relevance: 80,
-    confidence: 83,
-    problem_solving: 75,
-    summary:
-      "Candidate demonstrates strong backend knowledge. Needs deeper scalability analysis.",
-    strengths: [
-      "Strong database fundamentals",
-      "Logical structuring",
-      "Clear explanation style",
-    ],
-    improvements: [
-      "Add more metrics",
-      "Improve confidence under pressure",
-      "Explain trade-offs deeply",
-    ],
-    transcript: [
-      {
-        question: "Explain database indexing.",
-        candidate:
-          "Indexing improves performance using B-tree structures.",
-        ai_evaluation:
-          "Strong conceptual clarity but missing complexity discussion.",
-        ai_score: 85,
-        rule_score: 75,
-      },
-      {
-        question: "How would you scale a REST API?",
-        candidate:
-          "Using load balancers and horizontal scaling.",
-        ai_evaluation:
-          "Good answer but lacked caching depth explanation.",
-        ai_score: 80,
-        rule_score: 70,
-      },
-    ],
+  // const report = {
+  //   role: "Backend Developer",
+  //   session_id: id,
+  //   date: "27 Feb 2026",
+  //   duration: "18 mins",
+  //   final_score: 82,
+  //   ai_score: 84,
+  //   rule_score: 79,
+  //   technical: 85,
+  //   communication: 78,
+  //   relevance: 80,
+  //   confidence: 83,
+  //   problem_solving: 75,
+  //   summary:
+  //     "Candidate demonstrates strong backend knowledge. Needs deeper scalability analysis.",
+  //   strengths: [
+  //     "Strong database fundamentals",
+  //     "Logical structuring",
+  //     "Clear explanation style",
+  //   ],
+  //   improvements: [
+  //     "Add more metrics",
+  //     "Improve confidence under pressure",
+  //     "Explain trade-offs deeply",
+  //   ],
+  //   transcript: [
+  //     {
+  //       question: "Explain database indexing.",
+  //       candidate:
+  //         "Indexing improves performance using B-tree structures.",
+  //       ai_evaluation:
+  //         "Strong conceptual clarity but missing complexity discussion.",
+  //       ai_score: 85,
+  //       rule_score: 75,
+  //     },
+  //     {
+  //       question: "How would you scale a REST API?",
+  //       candidate:
+  //         "Using load balancers and horizontal scaling.",
+  //       ai_evaluation:
+  //         "Good answer but lacked caching depth explanation.",
+  //       ai_score: 80,
+  //       rule_score: 70,
+  //     },
+  //   ],
+  // };
+
+  const [report, setReport] = useState(null);
+
+  const API_BASE = "http://127.0.0.1:8000/api/interviews";
+
+  const getToken = () => localStorage.getItem("access_token");
+
+  const downloadReport = async () => {
+
+    try {
+
+      const res = await fetch(
+        `http://127.0.0.1:8000/api/interviews/${id}/report/download/`,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`
+          }
+        }
+      );
+
+      const blob = await res.blob();
+
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `interview_report_${id}.pdf`;
+
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+
+    } catch (err) {
+      console.error("Download failed", err);
+    }
+
   };
+
+  useEffect(() => {
+
+    if (!getToken()) {
+      navigate("/login");
+      return;
+    }
+  
+  if (!id) {
+    return <div className="p-10 text-center">Invalid Report ID</div>;
+  }
+
+  const fetchReport = async () => {
+
+  try {
+
+    const res = await fetch(
+      `${API_BASE}/${id}/report/`,
+      {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      }
+    );
+
+    console.log("STATUS:", res.status);
+
+    const response = await res.json();
+
+    console.log("REPORT API:", response);
+
+
+    const data = response.report;
+    const transcriptData = { transcript: [] };
+    console.log("API RESPONSE:", response);
+
+    // let transcriptData = { transcript: [] };
+
+    // try {
+
+    //   const transcriptRes = await fetch(
+    //     `${API_BASE}/${id}/transcript/`,
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${getToken()}`
+    //       }
+    //     }
+    //   );
+
+    //   transcriptData = await transcriptRes.json();
+
+    // } catch {
+    //   console.warn("Transcript API not available");
+    // }
+
+    setReport({
+
+      role: "Interview",
+      session_id: id,
+      date: new Date().toLocaleDateString(),
+      duration: "5 mins",
+
+      final_score: data?.overall_score || 0,
+      ai_score: data?.technical_score || 0,
+      rule_score: data?.communication_score || 0,
+
+      technical: data?.technical_score || 0,
+      communication: data?.communication_score || 0,
+      relevance: 0,
+      confidence: 0,
+      problem_solving: 0,
+
+      summary: data?.strengths || "",
+
+      strengths: data?.strengths
+        ? data.strengths.split("\n")
+        : [],
+
+      improvements: data?.suggestions
+        ? data.suggestions.split("\n")
+        : [],
+
+      // transcript: transcriptData?.transcript || []
+      // transcript: []
+      transcript: transcriptData.transcript
+
+    });
+    console.log("REPORT STATE SET");
+
+  } catch (err) {
+    console.error("Failed to load report", err);
+  }
+
+};
+
+  fetchReport();
+
+}, [id]);
+
+if (!report) {
+  return (
+    <div className="p-10 text-center">
+      Loading report...
+    </div>
+);
+}
 
   return (
     <div className="max-w-7xl mx-auto space-y-10">
@@ -164,7 +309,10 @@ function ReportDetail() {
 
       {/* ================= DOWNLOAD ================= */}
       <div className="flex justify-center">
-        <button className="px-6 py-3 rounded-2xl bg-gray-900 text-white font-medium hover:bg-black hover:scale-[1.03] transition-all duration-300">
+        <button
+          onClick={downloadReport}
+          className="px-6 py-3 rounded-2xl bg-gray-900 text-white font-medium hover:bg-black hover:scale-[1.03] transition-all duration-300"
+        >
           Download Full Report
         </button>
       </div>

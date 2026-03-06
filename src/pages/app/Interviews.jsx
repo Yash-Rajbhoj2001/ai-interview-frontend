@@ -12,39 +12,188 @@ function Interviews() {
   const [completed, setCompleted] = useState(false);
   const [generating, setGenerating] = useState(false);
 
+  const [jdList, setJdList] = useState([]);
+  const [selectedJD, setSelectedJD] = useState(null);
+  const [sessionId, setSessionId] = useState(null);
+  const [currentQuestionId, setCurrentQuestionId] = useState(null);
+  const [interviewType, setInterviewType] = useState("Technical");
+  const [role, setRole] = useState("BACKEND");
+  
+
+  const API_BASE = "http://127.0.0.1:8000/api/interviews";
+  // const getToken = () => localStorage.getItem("access_token");
+  const getToken = () => {
+    return localStorage.getItem("access_token") || "";
+  };
+
   /* ================= TIMER ================= */
-  useEffect(() => {
+    useEffect(() => {
+
+      if (!getToken()) {
+        navigate("/login");
+        return;
+      }
+
     if (!active) return;
 
     const timer = setInterval(() => {
-      setSeconds((prev) => prev + 1);
+
+      setSeconds((prev) => {
+
+        const limit = 300; // FREE PLAN 5 MIN
+
+        if (prev >= limit) {
+          endInterview();
+          return prev;
+        }
+
+        return prev + 1;
+
+      });
+
     }, 1000);
 
     return () => clearInterval(timer);
+
   }, [active]);
 
-  const formatTime = () => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
-  };
+  /* ================= FETCH JD ================= */
+    useEffect(() => {
+
+    const fetchJDs = async () => {
+
+      try {
+
+        const res = await fetch("http://127.0.0.1:8000/api/jd/", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`
+          }
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+          console.error(data);
+          return;
+        }
+
+        if (!res.ok) {
+          console.error("API error:", data);
+          return;
+        }
+
+        setJdList(data);
+
+      } catch (err) {
+        console.error("Failed to load JDs", err);
+      }
+
+    };
+
+    fetchJDs();
+
+  }, []);
 
   /* ================= START INTERVIEW ================= */
-  const startInterview = () => {
+  const startInterview = async () => {
+
+  const token = localStorage.getItem("access_token");
+  console.log("TOKEN:", token);
+
+  if (!selectedJD) {
+    alert("Please select a Job Description");
+    return;
+  }
+
+  try {
+
+    const res = await fetch(
+      "http://127.0.0.1:8000/api/interviews/start/",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: `Bearer ${localStorage.getItem("access_token")}`
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          jd_id: selectedJD,
+          interview_type: interviewType
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error(data);
+      return;
+    }
+
+    if (!res.ok) {
+      console.error("API error:", data);
+      return;
+    }
+
+    setSessionId(data.session_id);
+
     setStarted(true);
     setActive(true);
     setSeconds(0);
 
-    setMessages([
-      {
-        role: "ai",
-        content: "Welcome. Let's begin your mock interview."
+    fetchQuestion(data.session_id);
+
+  } catch (err) {
+    console.error("Start interview failed", err);
+  }
+
+};
+
+  /* ================= FETCH QUESTIONS ================= */
+  const fetchQuestion = async (session) => {
+
+    try {
+
+      const res = await fetch(
+        `${API_BASE}/${session}/question/`,
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`
+          }
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error(data);
+        return;
       }
-    ]);
+
+      if (!res.ok) {
+        console.error("API error:", data);
+        return;
+      }
+
+      setCurrentQuestionId(data.question_id);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "ai",
+          content: data.question
+        }
+      ]);
+
+    } catch (err) {
+      console.error("Failed to fetch question", err);
+    }
+
   };
 
   /* ================= SEND MESSAGE ================= */
-  const handleSend = () => {
+  const handleSend = async () => {
+
     if (!input.trim()) return;
 
     const userMessage = {
@@ -53,37 +202,164 @@ function Interviews() {
     };
 
     setMessages((prev) => [...prev, userMessage]);
+
+    const answerText = input;
+
     setInput("");
-    simulateAIResponse();
+    setIsTyping(true);
+
+    try {
+
+      const res = await fetch(
+        `${API_BASE}/${sessionId}/answer/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`
+          },
+          body: JSON.stringify({
+            question_id: currentQuestionId,
+            answer: answerText
+          })
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error(data);
+        return;
+      }
+
+      if (!res.ok) {
+        console.error("API error:", data);
+        return;
+      }
+
+      setIsTyping(false);
+
+      if (data.next_question) {
+      setCurrentQuestionId(data.question_id);
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "ai",
+          content: data.next_question
+        }
+      ]);
+    }
+
+      if (!data.next_question) {
+        endInterview();
+        return;
+      }
+
+    } catch (err) {
+      console.error("Answer submission failed", err);
+    }
+
   };
 
   /* ================= FAKE AI RESPONSE ================= */
-  const simulateAIResponse = () => {
-    setIsTyping(true);
+  // const simulateAIResponse = () => {
+  //   setIsTyping(true);
 
-    setTimeout(() => {
-      const aiMessage = {
-        role: "ai",
-        content:
-          "Thank you for your response. Can you elaborate on the challenges you faced?"
+  //   setTimeout(() => {
+  //     const aiMessage = {
+  //       role: "ai",
+  //       content:
+  //         "Thank you for your response. Can you elaborate on the challenges you faced?"
+  //     };
+
+  //     setMessages((prev) => [...prev, aiMessage]);
+  //     setIsTyping(false);
+  //   }, 2000);
+  // };
+
+    /* ================= END INTERVIEW ================= */
+    // const endInterview = async () => {
+
+    //   setActive(false);
+    //   setGenerating(true);
+
+    //   try {
+
+    //     const res = await fetch(
+    //       `${API_BASE}/${sessionId}/report/`,
+    //       {
+    //         headers: {
+    //           Authorization: `Bearer ${getToken()}`
+    //         }
+    //       }
+    //     );
+
+    //     await res.json();
+
+    //     setTimeout(() => {
+    //       setGenerating(false);
+    //       setCompleted(true);
+    //     }, 1500);
+
+    //   } catch (err) {
+    //     console.error("Report generation failed", err);
+    //   }
+
+    // };
+
+      const endInterview = async () => {
+
+        if (!sessionId) {
+          console.error("Session ID missing");
+          return;
+        }
+
+        setActive(false);
+        setGenerating(true);
+
+        try {
+
+          console.log("Generating report for:", sessionId);
+
+          const res = await fetch(
+            `${API_BASE}/${sessionId}/report/`,
+            {
+              headers: {
+                Authorization: `Bearer ${getToken()}`
+              }
+            }
+          );
+
+          if (!res.ok) {
+            throw new Error("Report API failed");
+          }
+
+          const data = await res.json();
+
+          console.log("Report generated:", data);
+
+          setTimeout(() => {
+            setGenerating(false);
+            setCompleted(true);
+          }, 1500);
+
+        } catch (err) {
+
+          console.error("Report generation failed:", err);
+
+          setGenerating(false);
+
+        }
+
       };
 
-      setMessages((prev) => [...prev, aiMessage]);
-      setIsTyping(false);
-    }, 2000);
-  };
 
-  const endInterview = () => {
-  setActive(false);
-  setGenerating(true);
-
-  // Fake report generation delay
-  setTimeout(() => {
-    setGenerating(false);
-    setCompleted(true);
-  }, 2500);
-};
-
+  const formatTime = () => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+};    
   return (
     <div className="max-w-7xl mx-auto space-y-8">
 
@@ -94,7 +370,7 @@ function Interviews() {
             Mock Interview Session
           </h2>
           <p className="text-gray-500 text-sm mt-1">
-            Job Role: Backend Developer
+            Job Role: {role}
           </p>
         </div>
 
@@ -105,8 +381,60 @@ function Interviews() {
         )}
       </div>
 
+
+      {/* ================= SELECT JD & INTERVIEW TYPE ================= */}
+      {!started && (
+      <div className="space-y-4 ">
+
+        {/* SELECT JD */}
+
+        <select
+          value={selectedJD}
+          onChange={(e) => {
+            const jdId = e.target.value;
+
+            setSelectedJD(jdId);
+
+            const selected = jdList.find(jd => jd.id == jdId);
+
+            if (selected) {
+              setRole(selected.role);
+            }
+          }}
+          className="w-full p-3 rounded-xl border border-gray-200"
+        >
+
+          <option value="">Select Job Description</option>
+
+          {jdList.map((jd) => (
+            <option key={jd.id} value={jd.id}>
+              {jd.role} • {jd.company_name || "Company"}
+            </option>
+          ))}
+
+        </select>
+
+
+        {/* INTERVIEW TYPE */}
+
+        <select
+          value={interviewType}
+          onChange={(e) => setInterviewType(e.target.value)}
+          className="w-full p-3 rounded-xl border border-gray-200"
+        >
+
+          <option value="Technical">Technical Interview</option>
+          <option value="HR">HR Interview</option>
+          <option value="Mixed">Mixed Interview</option>
+
+        </select>
+
+      </div>
+      )}
+
       {/* ================= IF NOT STARTED ================= */}
       {!started && (
+
         <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-16 shadow-sm border border-gray-200/50 text-center space-y-6">
           <h3 className="text-xl font-semibold text-gray-900">
             Ready to begin your mock interview?
@@ -173,7 +501,7 @@ function Interviews() {
                 />
 
                 <button
-                  onClick={handleSend}
+                  onClick={handleSend} disabled={isTyping}
                   className="px-6 py-3 rounded-2xl bg-gray-900 text-white hover:bg-black transition"
                 >
                   Send
