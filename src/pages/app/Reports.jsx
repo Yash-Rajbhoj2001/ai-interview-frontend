@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 function Reports() {
@@ -6,36 +6,105 @@ function Reports() {
   // -----------------------------
   // Mock Data (Replace with API)
   // -----------------------------
-  const reports = [
-    {
-      id: "1",
-      role: "Backend Developer",
-      final_score: 82,
-      ai_score: 84,
-      rule_score: 79,
-      duration: "18 mins",
-      date: "27 Feb 2026",
-    },
-    {
-      id: "2",
-      role: "Frontend Developer",
-      final_score: 76,
-      ai_score: 80,
-      rule_score: 72,
-      duration: "22 mins",
-      date: "20 Feb 2026",
-    },
-  ];
+  // const reports = [
+  //   {
+  //     id: "1",
+  //     role: "Backend Developer",
+  //     final_score: 82,
+  //     ai_score: 84,
+  //     rule_score: 79,
+  //     duration: "18 mins",
+  //     date: "27 Feb 2026",
+  //   },
+  //   {
+  //     id: "2",
+  //     role: "Frontend Developer",
+  //     final_score: 76,
+  //     ai_score: 80,
+  //     rule_score: 72,
+  //     duration: "22 mins",
+  //     date: "20 Feb 2026",
+  //   },
+  // ];
+
+  const [reports, setReports] = useState([]);
+
+  const API_BASE = "http://127.0.0.1:8000/api/interviews";
+
+  const getToken = () => localStorage.getItem("access_token");
+
+  useEffect(() => {
+
+    if (!getToken()) {
+      navigate("/login");
+      return;
+    }
+
+  const fetchReports = async () => {
+
+    try {
+
+      const res = await fetch(API_BASE, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`
+        }
+      });
+
+      const data = await res.json();
+
+      const formatted = data.map((item) => {
+
+        const dateObj = new Date(item.created_at);
+
+        return {
+          // id: item.id || item.session_id,
+          id: item.session_id ?? item.id,
+          role: item.role || "Interview",
+          final_score: item.final_score || 0,
+          ai_score: item.ai_score || 0,
+          rule_score: item.rule_score || 0,
+          duration: `${Math.floor((item.duration_seconds || 300) / 60)} mins`,
+          date: dateObj.toLocaleDateString("en-GB"),
+          time: dateObj.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+          })
+        };
+
+      });
+
+      setReports(formatted);
+
+    } catch (err) {
+      console.error("Failed to load reports", err);
+    }
+
+  };
+
+  fetchReports();
+
+}, []);
 
   // -----------------------------
   // KPI Calculations
   // -----------------------------
   const totalInterviews = reports.length;
   const avgScore =
-    reports.reduce((acc, r) => acc + r.final_score, 0) /
-    reports.length;
+  reports.length > 0
+    ? reports.reduce((acc, r) => acc + r.final_score, 0) / reports.length
+    : 0;  
 
-  const bestScore = Math.max(...reports.map((r) => r.final_score));
+  const bestScore =
+  reports.length > 0
+    ? Math.max(...reports.map((r) => r.final_score))
+    : 0;
+  const [page, setPage] = useState(1);
+  const perPage = 8;
+
+  const start = (page - 1) * perPage;
+  const end = start + perPage;
+
+  const paginatedReports = reports.slice(start, end);
 
   return (
     <div className="max-w-7xl mx-auto space-y-10">
@@ -68,11 +137,12 @@ function Reports() {
               <th>Rule</th>
               <th>Duration</th>
               <th>Date</th>
+              <th>Time</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {reports.map((report) => (
+            {paginatedReports.map((report) => (
               <tr key={report.id} className="border-t border-gray-200">
                 <td className="p-6 font-medium text-gray-900">
                   {report.role}
@@ -82,6 +152,7 @@ function Reports() {
                 <td>{report.rule_score}%</td>
                 <td>{report.duration}</td>
                 <td className="text-gray-500">{report.date}</td>
+                <td className="text-gray-500">{report.time}</td>
                 <td className="pr-6 text-right">
                   <Link
                     to={`/reports/${report.id}`}
@@ -94,6 +165,25 @@ function Reports() {
             ))}
           </tbody>
         </table>
+        <div className="flex justify-center gap-4 mt-6">
+
+        <button
+          disabled={page === 1}
+          onClick={() => setPage(page - 1)}
+          className="px-4 py-2 bg-gray-200 rounded-lg"
+        >
+        Prev
+        </button>
+
+        <button
+          disabled={end >= reports.length}
+          onClick={() => setPage(page + 1)}
+          className="px-4 py-2 bg-gray-200 rounded-lg"
+        >
+        Next
+        </button>
+
+</div>
       </div>
 
       {/* ================= START NEW INTERVIEW ================= */}
