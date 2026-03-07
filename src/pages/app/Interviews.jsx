@@ -20,7 +20,8 @@ function Interviews() {
   const [role, setRole] = useState("BACKEND");
   
 
-  const API_BASE = "http://127.0.0.1:8000/api/interviews";
+  // const API_BASE = "http://127.0.0.1:8000/api/interviews";
+  const API_BASE = "https://ai-interview-backend-wifh.onrender.com/api/interviews";
   // const getToken = () => localStorage.getItem("access_token");
   const getToken = () => {
     return localStorage.getItem("access_token") || "";
@@ -64,7 +65,8 @@ function Interviews() {
 
       try {
 
-        const res = await fetch("http://127.0.0.1:8000/api/jd/", {
+        // const res = await fetch("http://127.0.0.1:8000/api/jd/", {
+        const res = await fetch("https://ai-interview-backend-wifh.onrender.com/api/jd/", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("access_token")}`
           }
@@ -108,7 +110,8 @@ function Interviews() {
   try {
 
     const res = await fetch(
-      "http://127.0.0.1:8000/api/interviews/start/",
+      // "http://127.0.0.1:8000/api/interviews/start/",
+      "https://ai-interview-backend-wifh.onrender.com/api/interviews/start/",
       {
         method: "POST",
         headers: {

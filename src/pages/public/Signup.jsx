@@ -56,7 +56,8 @@ function Signup() {
   }
 
   try {
-    const response = await fetch("http://127.0.0.1:8000/api/users/register/", {
+    // const response = await fetch("http://127.0.0.1:8000/api/users/register/", {
+    const response = await fetch("https://ai-interview-backend-wifh.onrender.com/api/users/register/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -81,7 +82,8 @@ function Signup() {
 
     // After successful register
 
-      const loginResponse = await fetch("http://127.0.0.1:8000/api/users/login/", {
+      // const loginResponse = await fetch("http://127.0.0.1:8000/api/users/login/", {
+      const loginResponse = await fetch("https://ai-interview-backend-wifh.onrender.com/api/users/login/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

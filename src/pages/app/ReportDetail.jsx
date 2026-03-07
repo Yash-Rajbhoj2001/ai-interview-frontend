@@ -58,7 +58,8 @@ function ReportDetail() {
 
   const [report, setReport] = useState(null);
 
-  const API_BASE = "http://127.0.0.1:8000/api/interviews";
+  // const API_BASE = "http://127.0.0.1:8000/api/interviews";
+  const API_BASE = "https://ai-interview-backend-wifh.onrender.com/api/interviews";
 
   const getToken = () => localStorage.getItem("access_token");
 
@@ -67,7 +68,8 @@ function ReportDetail() {
     try {
 
       const res = await fetch(
-        `http://127.0.0.1:8000/api/interviews/${id}/report/download/`,
+        // `http://127.0.0.1:8000/api/interviews/${id}/report/download/`,
+        `https://ai-interview-backend-wifh.onrender.com/api/interviews/${id}/report/download/`,
         {
           headers: {
             Authorization: `Bearer ${getToken()}`
