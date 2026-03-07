@@ -6,7 +6,8 @@ function JobDescriptions() {
   const [savedJDs, setSavedJDs] = useState([]);
   const [error, setError] = useState("");
 
-  const API_BASE = "http://127.0.0.1:8000/api/jd";
+  // const API_BASE = "http://127.0.0.1:8000/api/jd";
+  const API_BASE = "https://ai-interview-backend-wifh.onrender.com/api/jd";
   const getToken = () => localStorage.getItem("access_token");
 
   const [role, setRole] = useState("BACKEND");

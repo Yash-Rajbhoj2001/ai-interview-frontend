@@ -29,7 +29,8 @@ function Reports() {
 
   const [reports, setReports] = useState([]);
 
-  const API_BASE = "http://127.0.0.1:8000/api/interviews";
+  // const API_BASE = "http://127.0.0.1:8000/api/interviews";
+  const API_BASE = "https://ai-interview-backend-wifh.onrender.com/api/interviews";
 
   const getToken = () => localStorage.getItem("access_token");
 
