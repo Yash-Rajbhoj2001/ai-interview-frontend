@@ -63,7 +63,7 @@ function Signup() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: fullName,   // backend requires username
+        name: fullName,   // backend expects "name"
         email: email,
         password: password,
       }),
@@ -73,8 +73,9 @@ function Signup() {
 
     if (!response.ok) {
       throw new Error(
+        data.error ||
         data.email?.[0] ||
-        data.username?.[0] ||
+        // data.username?.[0] ||
         data.password?.[0] ||
         "Signup failed"
       );
@@ -89,12 +90,17 @@ function Signup() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          // name: fullName,
           email: email,
           password: password,
         }),
       });
 
       const loginData = await loginResponse.json();
+
+      if (!loginResponse.ok) {
+        throw new Error("Login failed after signup");
+      }
 
       localStorage.setItem("access_token", loginData.access);
       localStorage.setItem("refresh_token", loginData.refresh);
